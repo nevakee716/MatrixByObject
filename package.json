@@ -1,7 +1,7 @@
 {
   "name": "MatrixByObject",
   "version": "1.2.1",
-  "description": "https://github.com/nevakee716/cwLayoutMatrixByObject/wiki",
+  "description": "Allow you to display association between object in a diagram",
   "main": "src/cwLayoutMatrixByObject.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,6 +15,7 @@
   "bugs": {
     "url": "https://github.com/nevakee716/cwLayoutMatrixByObject/issues"
   },
-  "homepage": "https://github.com/nevakee716/cwLayoutMatrixByObject#readme",
+  "homepage": "https://github.com/nevakee716/cwLayoutMatrixByObject/wiki",
+  "wiki": "https://github.com/nevakee716/cwLayoutMatrixByObject/wiki",
   "evolve-version": "4.0"
 }
