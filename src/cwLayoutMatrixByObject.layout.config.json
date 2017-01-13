@@ -10,7 +10,7 @@
         "Type": 0
     },{
         "Id": "first-node",
-        "DisplayName": "first nodeID",
+        "DisplayName": "First nodeID",
         "Description": "Enter the node ID of the 1st node of the association to display on the matrix",
         "Type": 0
     },{
