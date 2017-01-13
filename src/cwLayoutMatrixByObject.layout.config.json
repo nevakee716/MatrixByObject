@@ -8,5 +8,10 @@
         "DisplayName": "Custom Association Properties Display",
         "Description": "Enter how you want to display association property in matrix cells : exemple Property1:NameIfchecked,Property2,....",
         "Type": 0
+    },{
+        "Id": "connection-policy",
+        "DisplayName": "Display only objects that are connected to father",
+        "Description": "Display only objects that are connected to father",
+        "Type": 1
     }]
 }

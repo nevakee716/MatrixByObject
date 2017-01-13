@@ -8,6 +8,8 @@
     var cwLayoutMatrixByObject = function(options, viewSchema) {
         cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
         cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
+        this.policy = this.options.CustomOptions['connection-policy'];
+        
     };
 
     // obligatoire appeler par le system
@@ -32,12 +34,13 @@
                         name = lvlOneObjects[j].name;
                         object_id = lvlOneObjects[j].object_id;
                         // on ne prends en compte que les premiers
-                        if (k === 0) {
+                        if (k === 0 && this.policy) {
                             this.oColumms[object_id] = name;
-                        } else if (k === 1) {
+                        } else if ((k === 1 && this.policy) || (k === 0 && !this.policy)) {
                         	//une fois qu'on a les colonnes on regarde les associations 
-                            this.lookForAssociation(lvlOneObjects[j]);
                             this.oRows[object_id] = name;
+                            this.lookForAssociation(lvlOneObjects[j]);
+
                         }
                     }
                     k++;
@@ -61,6 +64,11 @@
                         tempAssoName = objectLvlOne.object_id + "_" + object.object_id;
                         // on va lire les propriétés de l'associations
                         this.oAssos[tempAssoName] = this.readAssociationProperties(objectLvlOne);
+                    } else if(!this.policy){
+                        this.oColumms[objectLvlOne.object_id] = objectLvlOne.name;
+                        tempAssoName = objectLvlOne.object_id + "_" + object.object_id;
+                        // on va lire les propriétés de l'associations
+                        this.oAssos[tempAssoName] = this.readAssociationProperties(objectLvlOne);
                     }
                 }, this);
             }
@@ -80,7 +88,7 @@
             function(a, b) {
                 return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
             }
-        )
+        );
         return sortable;
     };
 
@@ -114,12 +122,16 @@
             }
         }
         return tempTxt;
-    }
+    };
 
     cwLayoutMatrixByObject.prototype.drawTable = function(output, rows, columms) {
         var table = document.createElement('table');
         table.className = "matrix";
-        output.push('<table class="matrix"><tr><td class="matrixHeader"></td>');
+        var visible = "";
+        if(rows.length != 0 && columms.length != 0){
+            visible = 'cw-visible';
+        }
+        output.push('<table class="matrix ' + visible + '"><tr><td class="matrixHeader"></td>');
 
         // header row
         for (i = 0; i < columms.length; i += 1) {
