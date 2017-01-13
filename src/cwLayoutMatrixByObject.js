@@ -9,7 +9,8 @@
         cwApi.extend(this, cwApi.cwLayouts.CwLayout, options, viewSchema); // heritage
         cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
         this.policy = this.options.CustomOptions['connection-policy'];
-        
+        this.first_node = this.options.CustomOptions['first-node'];
+        this.second_node = this.options.CustomOptions['second-node'];        
     };
 
     // obligatoire appeler par le system
@@ -27,25 +28,35 @@
         if (lvlZeroObjects.length === 1) {
         	// on ne fait que pour lorsqu'il n'y a qu'un objet concerner par le layout, exemple un process 
         	// qui a un diagramme eclaté à qui on applique le layout matrice.
-            for (i in lvlZeroObjects[0].associations) {
-                if (lvlZeroObjects[0].associations.hasOwnProperty(i)) {
-                    lvlOneObjects = lvlZeroObjects[0].associations[i];
-                    for (j = 0; j < lvlOneObjects.length; j += 1) {
-                        name = lvlOneObjects[j].name;
-                        object_id = lvlOneObjects[j].object_id;
-                        // on ne prends en compte que les premiers
-                        if (k === 0 && this.policy) {
-                            this.oColumms[object_id] = name;
-                        } else if ((k === 1 && this.policy) || (k === 0 && !this.policy)) {
-                        	//une fois qu'on a les colonnes on regarde les associations 
-                            this.oRows[object_id] = name;
-                            this.lookForAssociation(lvlOneObjects[j]);
 
-                        }
+            lvlOneObjects = lvlZeroObjects[0].associations[this.first_node];
+            
+            if(this.policy) {
+                for (j = 0; j < lvlOneObjects.length; j += 1) {
+                    name = lvlOneObjects[j].name;
+                    object_id = lvlOneObjects[j].object_id;
+                    // on ne prends en compte que les premiers
+                    if (k === 0 && this.policy) {
+                        this.oColumms[object_id] = name;
+                    } else if ((k === 1 && this.policy) || (k === 0 && !this.policy)) {
+                        //une fois qu'on a les colonnes on regarde les associations 
+                        this.oRows[object_id] = name;
+                        this.lookForAssociation(lvlOneObjects[j]);
+
                     }
-                    k++;
                 }
+                lvlOneObjects = lvlZeroObjects[0].associations[this.second_node];
+            } 
+
+
+            for (j = 0; j < lvlOneObjects.length; j += 1) {
+                name = lvlOneObjects[j].name;
+                object_id = lvlOneObjects[j].object_id;
+                this.oRows[object_id] = name;
+                this.lookForAssociation(lvlOneObjects[j]);
             }
+            
+
         }
 
         this.drawTable(output, this.sortObjectByValue(this.oRows), this.sortObjectByValue(this.oColumms));

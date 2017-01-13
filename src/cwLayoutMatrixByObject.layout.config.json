@@ -9,6 +9,16 @@
         "Description": "Enter how you want to display association property in matrix cells : exemple Property1:NameIfchecked,Property2,....",
         "Type": 0
     },{
+        "Id": "first-node",
+        "DisplayName": "first nodeID",
+        "Description": "Enter the node ID of the 1st node of the association to display on the matrix",
+        "Type": 0
+    },{
+        "Id": "second-node",
+        "DisplayName": "Second nodeID",
+        "Description": "Enter the node ID of the 2nd node of the association to display on the matrix",
+        "Type": 0
+    },{
         "Id": "connection-policy",
         "DisplayName": "Display only objects that are connected to father",
         "Description": "Display only objects that are connected to father",
