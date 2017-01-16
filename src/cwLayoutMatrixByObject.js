@@ -138,6 +138,8 @@
     cwLayoutMatrixByObject.prototype.drawTable = function(output, rows, columms) {
         var table = document.createElement('table');
         table.className = "matrix";
+        
+        // test if empty in tab 
         var visible = "";
         if(rows.length != 0 && columms.length != 0){
             visible = 'cw-visible';
