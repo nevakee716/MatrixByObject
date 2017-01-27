@@ -1,6 +1,6 @@
 {
   "name": "MatrixByObject",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Allow you to display association between object in a diagram",
   "main": "src/cwLayoutMatrixByObject.js",
   "scripts": {
