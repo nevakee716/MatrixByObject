@@ -10,54 +10,60 @@
         cwApi.registerLayoutForJSActions(this); // execute le applyJavaScript après drawAssociations
         this.policy = this.options.CustomOptions['connection-policy'];
         this.first_node = this.options.CustomOptions['first-node'];
-        this.second_node = this.options.CustomOptions['second-node'];        
+        this.second_node = this.options.CustomOptions['second-node'];   
+        this.title = this.options.CustomOptions['title'];      
     };
 
     // obligatoire appeler par le system
     cwLayoutMatrixByObject.prototype.drawAssociations = function(output, associationTitleText, object) {
-        // body...
-        var i, j, k;
-        this.oRows = {};
-        this.oColumms = {};
-        this.oAssos = {};
-        var lvlOneObjects;
-        var name, object_id;
-        var lvlZeroObjects = object.associations[this.nodeID];
-        k = 0;
-        // on parcours la liste d'objet à afficher, le premier représente les colonnes et le 2e les lignes
-        if (lvlZeroObjects.length === 1) {
-        	// on ne fait que pour lorsqu'il n'y a qu'un objet concerner par le layout, exemple un process 
-        	// qui a un diagramme eclaté à qui on applique le layout matrice.
+        try {
+            // body...
+            var i, j, k;
+            this.oRows = {};
+            this.oColumms = {};
+            this.oAssos = {};
+            var lvlOneObjects;
+            var name, object_id;
+            var lvlZeroObjects = object.associations[this.nodeID];
+            k = 0;
+            // on parcours la liste d'objet à afficher, le premier représente les colonnes et le 2e les lignes
+            if (lvlZeroObjects.length === 1) {
+                // on ne fait que pour lorsqu'il n'y a qu'un objet concerner par le layout, exemple un process 
+                // qui a un diagramme eclaté à qui on applique le layout matrice.
 
-            lvlOneObjects = lvlZeroObjects[0].associations[this.first_node];
-            
-            if(this.policy) {
+                lvlOneObjects = lvlZeroObjects[0].associations[this.first_node];
+                
+                if(this.policy) {
+                    for (j = 0; j < lvlOneObjects.length; j += 1) {
+                        name = lvlOneObjects[j].name;
+                        object_id = lvlOneObjects[j].object_id;
+                        // on ne prends en compte que les premiers
+                        if (k === 0 && this.policy) {
+                            this.oColumms[object_id] = name;
+                        } else if ((k === 1 && this.policy) || (k === 0 && !this.policy)) {
+                            //une fois qu'on a les colonnes on regarde les associations 
+                            this.oRows[object_id] = name;
+                            this.lookForAssociation(lvlOneObjects[j]);
+
+                        }
+                    }
+                    lvlOneObjects = lvlZeroObjects[0].associations[this.second_node];
+                } 
+
+
                 for (j = 0; j < lvlOneObjects.length; j += 1) {
                     name = lvlOneObjects[j].name;
                     object_id = lvlOneObjects[j].object_id;
-                    // on ne prends en compte que les premiers
-                    if (k === 0 && this.policy) {
-                        this.oColumms[object_id] = name;
-                    } else if ((k === 1 && this.policy) || (k === 0 && !this.policy)) {
-                        //une fois qu'on a les colonnes on regarde les associations 
-                        this.oRows[object_id] = name;
-                        this.lookForAssociation(lvlOneObjects[j]);
-
-                    }
+                    this.oRows[object_id] = name;
+                    this.lookForAssociation(lvlOneObjects[j]);
                 }
-                lvlOneObjects = lvlZeroObjects[0].associations[this.second_node];
-            } 
+                
 
-
-            for (j = 0; j < lvlOneObjects.length; j += 1) {
-                name = lvlOneObjects[j].name;
-                object_id = lvlOneObjects[j].object_id;
-                this.oRows[object_id] = name;
-                this.lookForAssociation(lvlOneObjects[j]);
             }
-            
-
+        } catch (e) {
+            console.log(e);
         }
+     
 
         this.drawTable(output, this.sortObjectByValue(this.oRows), this.sortObjectByValue(this.oColumms));
     };
@@ -115,18 +121,20 @@
         } else {
             var propertiesToDisplay = customProperty.split(",");
             for (var i in propertiesToDisplay) {
-                var propertyToDisplay = propertiesToDisplay[i].split(":");
-                for (var j in object.iProperties) {
-                    if (object.iProperties.hasOwnProperty(j) && j == propertyToDisplay[0].toLowerCase()) {
-                        // cas property en checkbox
-                        if (object.iProperties[j] === true) {
-                            if (propertyToDisplay[1] && propertyToDisplay[1] != "") {
-                                tempTxt += propertyToDisplay[1];
-                            } else {
-                                tempTxt += propertyToDisplay[0];
+                if(propertiesToDisplay.hasOwnProperty(i)) {
+                    var propertyToDisplay = propertiesToDisplay[i].split(":");
+                    for (var j in object.iProperties) {
+                        if (object.iProperties.hasOwnProperty(j) && j == propertyToDisplay[0].toLowerCase()) {
+                            // cas property en checkbox
+                            if (object.iProperties[j] === true) {
+                                if (propertyToDisplay[1] && propertyToDisplay[1] != "") {
+                                    tempTxt += propertyToDisplay[1];
+                                } else {
+                                    tempTxt += propertyToDisplay[0];
+                                }
+                            } else if (object.iProperties[j] !== false) { // property avec nom classique
+                                tempTxt += propertyToDisplay;
                             }
-                        } else if (object.iProperties[j] !== false) { // property avec nom classique
-                            tempTxt += propertyToDisplay;
                         }
                     }
                 }
@@ -144,7 +152,7 @@
         if(rows.length != 0 && columms.length != 0){
             visible = 'cw-visible';
         }
-        output.push('<table class="matrix ' + visible + '"><tr><td class="matrixHeader"></td>');
+        output.push('<table class="matrix ' + visible + '"><tr><td class="matrixHeader">'+this.title+'</td>');
 
         // header row
         for (i = 0; i < columms.length; i += 1) {

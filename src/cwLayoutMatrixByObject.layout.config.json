@@ -23,5 +23,10 @@
         "DisplayName": "Display only objects that are connected to father",
         "Description": "Display only objects that are connected to father",
         "Type": 1
+    },{
+        "Id": "title",
+        "DisplayName": "title",
+        "Description": "Title, you can use HTML5",
+        "Type": 0
     }]
 }

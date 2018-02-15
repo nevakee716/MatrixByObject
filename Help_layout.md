@@ -1,6 +1,8 @@
+# MatrixByObject
+
 | Name             | Status  | Stable | Work but need more test | Nightly | Updated by        |
 |------------------|---------|--------|-------------------------|---------|-------------------|
-| Matrix By Object | Version | 1.4    | 3.0                     | 3.x     | Mathias PFAUWADEL |
+| Matrix By Object | Version | 1.4    | 3.2                     | 3.x     | Mathias PFAUWADEL |
 
 
 # Description:
